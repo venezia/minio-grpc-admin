@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sos-api-server.fullname" . }}
+  labels:
+{{ include "sos-api-server.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "sos-api-server.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+{{ include "sos-api-server.labels" . | indent 8 }}
+    spec:
+      {{- if .Values.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.pullSecret }}
+      {{- end }}
+      serviceAccountName: {{ include "sos-api-server.fullname" . }}
+      volumes:
+        - name: config-files
+          configMap:
+            name: {{ .Release.Name }}-config-file
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SOS_API_GRPC_ADDRESS
+              value: ":{{ .Values.grpcService.targetPort }}"
+            - name: SOS_API_REST_ADDRESS
+              value: ":{{ .Values.restService.targetPort }}"
+            - name: SOS_LOG_LEVEL
+              value: "{{ .Values.logLevel }}"
+            - name: IMS_API_POSTGRES_CONNECTION
+              value: {{ .Values.postgres.connection }}
+            - name: IMS_API_POPULATE_DEMO_DB
+              value: "{{ .Values.demoData.loadDemoData }}"
+            {{- if .Values.pullSecret }}
+            - name: IMS_API_DEFAULT_CREDENTIAL
+              value: "{{.Release.Namespace}}/{{.Values.pullSecret}}"
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.restService.targetPort | int }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.grpcService.targetPort | int }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.restService.targetPort | int }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.restService.targetPort | int }}
+          command: ["./sos-api-server"]
+          volumeMounts:
+            - name: config-files
+              mountPath: /etc/ims-api/config
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

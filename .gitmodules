@@ -1,0 +1,3 @@
+[submodule "api/minio-grpc-admin-spec"]
+	path = api/minio-grpc-admin-spec
+	url = git@github.com:venezia/minio-grpc-admin-spec.git

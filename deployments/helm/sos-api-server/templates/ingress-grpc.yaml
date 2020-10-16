@@ -1,0 +1,37 @@
+{{- if .Values.ingress.grpc.enabled -}}
+{{- $fullName := include "sos-api-server.fullname" . -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-grpc
+  labels:
+{{ include "sos-api-server.labels" . | indent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"  
+  {{- with .Values.ingress.grpc.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.grpc.tls }}
+  tls:
+  {{- range .Values.ingress.grpc.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.grpc.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: grpc-port
+        {{- end }}
+  {{- end }}
+{{- end }}

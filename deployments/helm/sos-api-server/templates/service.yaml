@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sos-api-server.fullname" . }}
+  labels:
+{{ include "sos-api-server.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.restService.type }}
+  ports:
+    - port: {{ .Values.restService.port }}
+      targetPort: {{ .Values.restService.targetPort | int }}
+      protocol: TCP
+      {{- if .Values.restService.nodePort }}
+      nodePort: {{ .Values.restService.nodePort | int }}
+      {{- end }}
+      name: "rest-http-port"
+    - port: {{ .Values.grpcService.port }}
+      targetPort: {{ .Values.grpcService.targetPort | int }}
+      protocol: TCP
+      {{- if .Values.grpcService.nodePort }}
+      nodePort: {{ .Values.grpcService.nodePort | int }}
+      {{- end }}
+      name: "grpc-port"
+  selector:
+    app.kubernetes.io/name: {{ include "sos-api-server.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+{{- if .Values.remoteDebug }}
