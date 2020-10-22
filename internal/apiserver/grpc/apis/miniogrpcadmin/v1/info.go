@@ -36,7 +36,7 @@ func (s *Server) GetServerInformation(ctx context.Context, in *pb.GetServerInfor
 	fsBackend, ok := info.Backend.(models.FSBackend)
 	if ok {
 		output.Backend = &pb.GetServerInformationReply_FsBackend{
-			FsBackend: &pb.GetServerInformationReply_FSBackendType{ BackendType: string(fsBackend.Type) },
+			FsBackend: &pb.GetServerInformationReply_FSBackendType{BackendType: string(fsBackend.Type)},
 		}
 	} else if erasureBackend, ok := info.Backend.(models.ErasureBackend); ok {
 		output.Backend = &pb.GetServerInformationReply_ErasureBackend{
@@ -52,13 +52,12 @@ func (s *Server) GetServerInformation(ctx context.Context, in *pb.GetServerInfor
 		}
 	}
 
-
 	return output, nil
 }
 
 func convertInfoServices(input models.Services) *pb.GetServerInformationReply_Services {
 	return &pb.GetServerInformationReply_Services{
-		Vault:         &pb.GetServerInformationReply_Services_Vault{
+		Vault: &pb.GetServerInformationReply_Services_Vault{
 			Status:  input.Vault.Status,
 			Encrypt: input.Vault.Encrypt,
 			Decrypt: input.Vault.Decrypt,

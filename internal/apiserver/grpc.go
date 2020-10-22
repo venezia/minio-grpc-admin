@@ -10,8 +10,8 @@ import (
 	"github.com/venezia/minio-grpc-admin/internal/apiserver/grpc/interceptors/authentication"
 	"github.com/venezia/minio-grpc-admin/internal/apiserver/grpc/interceptors/authorization"
 	"github.com/venezia/minio-grpc-admin/internal/apiserver/grpc/interceptors/recovery"
-	mav1pb "github.com/venezia/minio-grpc-admin/pkg/generated/api/minioadmin/v1"
 	"github.com/venezia/minio-grpc-admin/internal/flags"
+	mav1pb "github.com/venezia/minio-grpc-admin/pkg/generated/api/minioadmin/v1"
 )
 
 var (

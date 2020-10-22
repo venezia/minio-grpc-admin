@@ -26,7 +26,6 @@ func init() {
 	logger = log.GetModuleLogger(loggerModuleName)
 }
 
-
 func AddWebsiteHandles(mux *http.ServeMux) {
 	serveSwagger(mux)
 	serveSwaggerJSON(mux)

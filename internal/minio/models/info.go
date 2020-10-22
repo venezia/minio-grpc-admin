@@ -21,7 +21,6 @@ package models
 
 import "time"
 
-
 // BackendType - represents different backend types.
 type BackendType int
 
