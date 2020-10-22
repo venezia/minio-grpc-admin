@@ -60,7 +60,7 @@ func addPanicRecoveryInterceptors() {
 }
 
 func addAuthenticationInterceptors() {
-	if viper.GetBool(flags.GRPCRecovery) {
+	if viper.GetBool(flags.GRPCAuthentication) {
 		logger.Infof("enabling grpc authentication")
 		chainedUnaryInterceptors = append(chainedUnaryInterceptors, authentication.UnaryAuthenticationInterceptor)
 	} else {
@@ -69,7 +69,7 @@ func addAuthenticationInterceptors() {
 }
 
 func addAuthorizationInterceptors() {
-	if viper.GetBool(flags.GRPCRecovery) {
+	if viper.GetBool(flags.GRPCAuthorization) {
 		logger.Infof("enabling grpc authorization")
 		chainedUnaryInterceptors = append(chainedUnaryInterceptors, authorization.UnaryAuthorizationInterceptor)
 	} else {

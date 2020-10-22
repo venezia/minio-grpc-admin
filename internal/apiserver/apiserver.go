@@ -3,8 +3,8 @@ package apiserver
 import (
 	"github.com/juju/loggo"
 	"github.com/soheilhy/cmux"
+	"github.com/venezia/minio-grpc-admin/internal/apiserver/grpc/apis/miniogrpcadmin/v1"
 
-	service "github.com/venezia/minio-grpc-admin/internal/apiserver/grpc/miniogrpcadmin"
 	"github.com/venezia/minio-grpc-admin/pkg/util/log"
 )
 
@@ -29,6 +29,6 @@ func AddServersToMux(tcpMux cmux.CMux, options *ServerOptions) {
 	addRestAndWebsite(tcpMux, options.PortNumber)
 }
 
-func newgRPCServiceServer() *service.Server {
-	return new(service.Server)
+func newgRPCServiceServer() *v1.Server {
+	return new(v1.Server)
 }

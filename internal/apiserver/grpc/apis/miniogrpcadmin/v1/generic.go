@@ -1,4 +1,4 @@
-package sosapi
+package v1
 
 import (
 	"github.com/juju/loggo"
@@ -13,5 +13,5 @@ var (
 type Server struct{}
 
 func init() {
-	logger = log.GetModuleLogger("internal.apiserver.grpc.miniogrpcadmin")
+	logger = log.GetModuleLogger("internal.apiserver.grpc.apis.miniogrpcadmin.v1")
 }

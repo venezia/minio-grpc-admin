@@ -1,4 +1,4 @@
-package sosapi
+package v1
 
 import (
 	"gitlab.com/mvenezia/version-info/pkg/version"

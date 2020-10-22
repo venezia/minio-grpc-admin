@@ -20,6 +20,55 @@
     "application/json"
   ],
   "paths": {
+    "/api/minioadmin/v1/server": {
+      "get": {
+        "operationId": "minioadmin_GetServerInformation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetServerInformationReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "endpoint.endpoint",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endpoint.access_key_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endpoint.secret_access_key",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endpoint.ssl",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "minioadmin"
+        ]
+      }
+    },
     "/api/minioadmin/v1/version": {
       "get": {
         "summary": "Will return version information about api server",
@@ -45,6 +94,146 @@
     }
   },
   "definitions": {
+    "AuditAuditMap": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "GetServerInformationReplyBuckets": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "GetServerInformationReplyErasureBackendType": {
+      "type": "object",
+      "properties": {
+        "backend_type": {
+          "type": "string"
+        },
+        "online_disks": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "offline_disks": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "standard_sc_data": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "standard_sc_parity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rrsc_data": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rrsc_parity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetServerInformationReplyFSBackendType": {
+      "type": "object",
+      "properties": {
+        "backend_type": {
+          "type": "string"
+        }
+      }
+    },
+    "GetServerInformationReplyObjects": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "GetServerInformationReplyServerProperties": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "uptime": {
+          "type": "string",
+          "format": "int64"
+        },
+        "version": {
+          "type": "string"
+        },
+        "commit_id": {
+          "type": "string"
+        },
+        "network": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServerPropertiesNetwork"
+          }
+        },
+        "disks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServerPropertiesDisk"
+          }
+        }
+      }
+    },
+    "GetServerInformationReplyServices": {
+      "type": "object",
+      "properties": {
+        "vault": {
+          "$ref": "#/definitions/ServicesVault"
+        },
+        "ldap": {
+          "$ref": "#/definitions/ServicesLDAP"
+        },
+        "loggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServicesLogger"
+          }
+        },
+        "audits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServicesAudit"
+          }
+        },
+        "notifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServicesNotifications"
+          }
+        }
+      }
+    },
+    "GetServerInformationReplyUsage": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "GetVersionReplyVersionInformation": {
       "type": "object",
       "properties": {
@@ -75,6 +264,179 @@
         "platform": {
           "type": "string",
           "title": "Platform it was compiled for / running on"
+        }
+      }
+    },
+    "LoggerLoggerMap": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "NotificationMapTargetIDStatus": {
+      "type": "object",
+      "properties": {
+        "target_id_status_map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TargetIDStatusTargetIDStatusMap"
+          }
+        }
+      }
+    },
+    "NotificationsNotificationMap": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "target_id_status": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NotificationMapTargetIDStatus"
+          }
+        }
+      }
+    },
+    "ServerPropertiesDisk": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "root_disk": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "drive_path": {
+          "type": "string"
+        },
+        "healing": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "state": {
+          "type": "string"
+        },
+        "uuid": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "total_space": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "used_space": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "available_space": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "read_throughput": {
+          "type": "number",
+          "format": "float"
+        },
+        "write_throughput": {
+          "type": "number",
+          "format": "float"
+        },
+        "read_latency": {
+          "type": "number",
+          "format": "float"
+        },
+        "write_latency": {
+          "type": "number",
+          "format": "float"
+        },
+        "utilization": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "ServerPropertiesNetwork": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "ServicesAudit": {
+      "type": "object",
+      "properties": {
+        "audit_map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AuditAuditMap"
+          }
+        }
+      }
+    },
+    "ServicesLDAP": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "ServicesLogger": {
+      "type": "object",
+      "properties": {
+        "logger_map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LoggerLoggerMap"
+          }
+        }
+      }
+    },
+    "ServicesNotifications": {
+      "type": "object",
+      "properties": {
+        "notification_map": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NotificationsNotificationMap"
+          }
+        }
+      }
+    },
+    "ServicesVault": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "encrypt": {
+          "type": "string"
+        },
+        "decrypt": {
+          "type": "string"
+        }
+      }
+    },
+    "TargetIDStatusTargetIDStatusMap": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
         }
       }
     },
@@ -110,6 +472,74 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Endpoint": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "access_key_id": {
+          "type": "string"
+        },
+        "secret_access_key": {
+          "type": "string"
+        },
+        "ssl": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "v1GetServerInformationReply": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "region": {
+          "type": "string"
+        },
+        "sqs_arn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deployment_id": {
+          "type": "string"
+        },
+        "buckets": {
+          "$ref": "#/definitions/GetServerInformationReplyBuckets"
+        },
+        "objects": {
+          "$ref": "#/definitions/GetServerInformationReplyObjects"
+        },
+        "usage": {
+          "$ref": "#/definitions/GetServerInformationReplyUsage"
+        },
+        "services": {
+          "$ref": "#/definitions/GetServerInformationReplyServices"
+        },
+        "fs_backend": {
+          "$ref": "#/definitions/GetServerInformationReplyFSBackendType"
+        },
+        "erasure_backend": {
+          "$ref": "#/definitions/GetServerInformationReplyErasureBackendType"
+        },
+        "servers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GetServerInformationReplyServerProperties"
           }
         }
       }
